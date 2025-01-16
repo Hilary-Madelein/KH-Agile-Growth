@@ -138,8 +138,8 @@ Antes de ejecutar el backend, asegúrese de configurar la base de datos. A conti
 ## Desarrolladores
 
 - **Karen Gonzaga** - [GitHub](https://github.com/KBGR55)
-- **Hilary Calva** - [GitHub](https://github.com/KBGR55)
+- **Hilary Calva** - [GitHub](https://github.com/Hilary-Madelein)
 
 ### Instructor
 
-- **Ing. Cristian Narvaez** - [GitHub](https://github.com/KBGR55)
+- **Ing. Cristian Narvaez** - [GitHub](https://github.com/codernarvaez)
