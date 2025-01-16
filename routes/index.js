@@ -5,5 +5,19 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
+router.get('/privado/:external', function(req, res, next) {
+  require('dotenv').config();
+  const llave=req.params.external;
+  const env=process.env.KEY_SQ;
+  if(llave === env){
+    var models=require('./../models');
+    models.sequelize.sync().then(()=>{
+      res.send('OK!');
+    }).catch(err=>{
+      res.send("Error"+err);
+    })
+  }else{
+    res.send("Llave incorrecta!");
+  }
+});
 module.exports = router;

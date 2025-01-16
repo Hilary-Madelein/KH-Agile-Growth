@@ -5,14 +5,14 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('kh-agile-growth:server');
+var debug = require('debug')('run-qa:server');
 var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3006');
 app.set('port', port);
 
 /**
@@ -88,3 +88,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+//Server archivos
