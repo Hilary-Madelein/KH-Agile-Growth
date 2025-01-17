@@ -104,11 +104,12 @@ const uploadFoto = (folderPath) => {
 const uploadFotoPersona = uploadFoto('../public/images/users');
 const uploadAnexoFotoError = uploadFoto('../public/images/errors');
 
-//INICIO DE SESION
+/*CUENTA*/
 router.post('/sesion', [
   body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail(),
   body('clave', 'Ingrese una clave valido').exists().not().isEmpty(),
-], cuentaController.sesion)
+], cuentaController.sesion);
+router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 
 //CAMBIAR CLAVE
 router.put('/cuenta/clave/:external_id', [
@@ -167,6 +168,27 @@ router.get('/listar/entidad', entidadController.listar);
 router.get('/listar/entidad/activos', entidadController.listarActivos);
 router.get('/obtener/entidad/:external', entidadController.obtener);
 router.get('/proyecto/listar', proyectoController.listar);
+
+/** ROL_ENTIDAD */
+router.get('/rol/entidad/listar', rolEntidadController.listar);
+router.post('/asignar/lideres', rolEntidadController.asignarLideres);
+router.post('/asignar/admin', rolEntidadController.asignarAdministrador);
+router.get('/rol/entidad/obtener/lider', rolEntidadController.obtenerLider);
+router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdministrador);
+/** PROYECTO */
+router.post('/proyecto', proyectoController.crearProyecto);
+router.put('/proyecto', proyectoController.actualizarProyecto);
+router.post('/proyecto/asignar', proyectoController.asignarProyecto);
+router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
+router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
+router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
+router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obtenerRolesPorProyecto);
+router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyecto);
+router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias', proyectoController.cambiarHorasDiarias);
+
+/** ROL_PROYECTO */
+router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
+router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
 
 // Routes
 router.post("/send-email", async (req, res) => {

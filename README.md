@@ -87,10 +87,12 @@ Antes de ejecutar el backend, asegúrese de configurar la base de datos. A conti
    START TRANSACTION;
 
    -- Tabla rol
+   -- Tabla rol
    INSERT INTO rol (id, external_id, estado, nombre, createdAt, updatedAt) 
    VALUES
-       (1, '1376cf7e-907c-11ef-8f4d-30e37a2aa82d', 1, 'ADMINISTRADOR SYS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
-       (2, '2df3ca7a-8e05-11ef-80ac-b48c9d91f915', 1, 'EQUIPO DE DESARROLLO', '2024-10-19 05:30:36', '2024-10-19 05:30:36');
+      (1, '1376cf7e-907c-11ef-8f4d-30e37a2aa82d', 1, 'ADMINISTRADOR SYS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
+      (2, '3c8c72e2-8f12-11ef-bc8b-30d7f710d9e3', 1, 'ADMIN_PROYECTO', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),     
+      (3, '2df3ca7a-8e05-11ef-80ac-b48c9d91f915', 1, 'EQUIPO DE DESARROLLO', '2024-10-19 05:30:36', '2024-10-19 05:30:36');
 
    -- Tabla entidad
    INSERT INTO entidad (id, external_id, estado, foto, nombres, apellidos, fecha_nacimiento, telefono, createdAt, updatedAt) 
