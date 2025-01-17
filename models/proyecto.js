@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     proyecto.associate = function (models){
         proyecto.hasMany(models.rol_proyecto, {foreignKey: 'id_proyecto',as:'proyecto_rol'});
+        proyecto.hasMany(models.resultado_checklist, {foreignKey: 'id_proyecto',as:'resultado_checklist'});
     };
  
     return proyecto;

@@ -18,6 +18,10 @@ const RolProyectoController = require('../controls/RolProyectoController');
 const rolProyectoController = new RolProyectoController();
 const RolEntidadController = require('../controls/RolEntidadController');
 const rolEntidadController = new RolEntidadController();
+const PreguntasController = require('../controls/PreguntasController');
+const preguntasController = new PreguntasController();
+const ResultadoChecklistController = require('../controls/ResultadoChecklistController');
+const resultadoChecklistController = new ResultadoChecklistController();
 
 
 var auth = function middleware(req, res, next) {
@@ -189,6 +193,12 @@ router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias',
 /** ROL_PROYECTO */
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
+
+/** PREGUNTAS DEL CHECKLIST */
+router.get('/preguntas/checklist', preguntasController.obtenerChecklist);
+
+/** RESULTADOS DEL CHECKLIST */
+router.post('/resultados/checklist', resultadoChecklistController.guardarResultados);
 
 // Routes
 router.post("/send-email", async (req, res) => {
