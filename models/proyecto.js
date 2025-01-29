@@ -20,14 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   proyecto.associate = function (models) {
-    proyecto.hasMany(models.rol_proyecto, {
-      foreignKey: "id_proyecto",
-      as: "proyecto_rol",
-    });
-    proyecto.hasMany(models.resultado_checklist, {
-      foreignKey: "id_proyecto",
-      as: "resultado_checklist",
-    });
+    proyecto.hasMany(models.rol_proyecto, { foreignKey: 'id_proyecto', as: 'proyecto_rol' });
+    proyecto.hasMany(models.resultado_checklist, { foreignKey: 'id_proyecto', as: 'resultado_checklist' });
+    proyecto.hasMany(models.resultado_categoria, { as: 'resultado_categoria', foreignKey: 'id_proyecto' });
+    proyecto.hasMany(models.nivel_madurez_general, { as: 'nivel_madurez_general', foreignKey: 'id_proyecto' });
   };
 
   return proyecto;
