@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             unique: true,
         },
+        estado:{type: DataTypes.BOOLEAN, defaultValue: true},
     }, {
         freezeTableName: true,
     });

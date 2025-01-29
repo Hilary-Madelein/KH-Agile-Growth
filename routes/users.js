@@ -22,6 +22,14 @@ const PreguntasController = require('../controls/PreguntasController');
 const preguntasController = new PreguntasController();
 const ResultadoChecklistController = require('../controls/ResultadoChecklistController');
 const resultadoChecklistController = new ResultadoChecklistController();
+const ChecklistController = require('../controls/ChecklistController');
+const checklistController = new ChecklistController();
+const ResultadoCategoriaController = require('../controls/ResultadoCategoriaController');
+const resultadoCategoriaController = new ResultadoCategoriaController();
+const NivelMadurezController = require('../controls/NivelMadurezController');
+const nivelMadurezController = new NivelMadurezController();
+const NivelMadurezGeneralController = require('../controls/NivelMadurezGeneralController');
+const nivelMadurezGeneralController = new NivelMadurezGeneralController();
 
 
 var auth = function middleware(req, res, next) {
@@ -179,6 +187,7 @@ router.post('/asignar/lideres', rolEntidadController.asignarLideres);
 router.post('/asignar/admin', rolEntidadController.asignarAdministrador);
 router.get('/rol/entidad/obtener/lider', rolEntidadController.obtenerLider);
 router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdministrador);
+
 /** PROYECTO */
 router.post('/proyecto', proyectoController.crearProyecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
@@ -199,6 +208,20 @@ router.get('/preguntas/checklist', preguntasController.obtenerChecklist);
 
 /** RESULTADOS DEL CHECKLIST */
 router.post('/resultados/checklist', resultadoChecklistController.guardarResultados);
+
+/** CHECKLIST */
+router.get('/checklist/listar', checklistController.listar);
+
+/** RESULTADO CATEGORIA */
+router.get('/resultado_categoria/calcular/:external_id_proyecto', resultadoCategoriaController.calcularPorcentajePorCategoria);
+router.get('/resultado_categoria/obtener/:external_id_proyecto', resultadoCategoriaController.obtenerResultadosGuardados);
+
+/** NIVEL MADUREZ GENERAL */
+router.get('/nivel_madurez_general/calcular/:external_id_proyecto', nivelMadurezGeneralController.calcularNivelMadurezGeneral);
+router.get('/nivel_madurez_general/obtener/:external_id_proyecto', nivelMadurezGeneralController.obtenerNivelMadurezGeneral);
+
+/** NIVEL MADUREZ */
+router.get('/nivel_madurez/listar', nivelMadurezController.listar);
 
 // Routes
 router.post("/send-email", async (req, res) => {
