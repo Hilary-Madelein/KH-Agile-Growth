@@ -81,7 +81,7 @@ class RolProyectoController {
             }
     
             const entidadAux = await models.rol_entidad.findAll({
-                where: { id_entidad: id_entidad },
+                where: { id_entidad: id_entidad ,estado:1},
                 attributes: ['id']
             });
     
