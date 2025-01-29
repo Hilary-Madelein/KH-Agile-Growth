@@ -42,7 +42,7 @@ class RolProyectoController {
                         model: models.proyecto,
                         as: 'proyecto_rol',
                         where: { estado: true },
-                        attributes: ['id', 'fecha_inicio', 'external_id', 'nombre', 'estado', 'descripcion']
+                        attributes: ['id', 'fecha_inicio', 'external_id', 'nombre', 'estado', 'descripcion','terminado','razon_terminado']
                     },
                     {
                         model: models.rol_entidad,
@@ -81,7 +81,7 @@ class RolProyectoController {
             }
     
             const entidadAux = await models.rol_entidad.findAll({
-                where: { id_entidad: id_entidad ,estado:1},
+                where: { id_entidad: id_entidad },
                 attributes: ['id']
             });
     
@@ -92,7 +92,7 @@ class RolProyectoController {
             const ids_entidad = entidadAux.map(item => item.id);
     
             const listar = await models.rol_proyecto.findAll({
-                where: { id_rol_entidad: ids_entidad },
+                where: { id_rol_entidad: ids_entidad,estado: 1 },
                 include: [
                     {
                         model: models.proyecto,
@@ -141,7 +141,6 @@ class RolProyectoController {
             res.status(500).json({ msg: 'Se produjo un error en listar roles', code: 500, info: error.message });
         }
     }
-    
 
 }
 
