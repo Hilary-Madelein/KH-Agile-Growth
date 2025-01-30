@@ -7,18 +7,14 @@ WORKDIR /usr/src/app
 # Copiar los archivos package.json y package-lock.json
 COPY package*.json ./
 
-# Instalar las dependencias del proyecto
+# Instalar las dependencias
 RUN npm install
 
 # Copiar el resto del código al contenedor
 COPY . .
 
-# Construir la aplicación para producción
-RUN npm run build
+# Iniciar la aplicación (sin build si es backend)
+CMD ["npm", "start"]
 
-# Servir la aplicación utilizando un servidor HTTP estático
-RUN npm install -g serve
-CMD ["serve", "-s", "build"]
-
-# Exponer el puerto 3000 para acceder a la aplicación
+# Exponer el puerto
 EXPOSE 3006
