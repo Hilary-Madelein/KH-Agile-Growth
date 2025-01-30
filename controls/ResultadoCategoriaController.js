@@ -69,7 +69,7 @@ class ResultadoCategoriaController {
     }
 
     async calcularPorcentajePorCategoria(req, res) {
-        const transaction = await models.sequelize.transaction(); 
+        const transaction = await models.sequelize.transaction();
         try {
             const { external_id_proyecto } = req.params;
     
@@ -136,16 +136,33 @@ class ResultadoCategoriaController {
                     nivelMadurezNombre = nivelMadurez.nombre;
                     idNivelMadurez = nivelMadurez.id;
                 }
-    
-                await models.resultado_categoria.upsert(
-                    {
+
+                const registroExistente = await models.resultado_categoria.findOne({
+                    where: {
                         id_proyecto,
                         id_checklist: categoria.id,
-                        porcentaje_cumplimiento: porcentajeCumplimiento.toFixed(2),
-                        id_nivel_madurez: idNivelMadurez,
                     },
-                    { transaction } 
-                );
+                });
+    
+                if (registroExistente) {
+                    await registroExistente.update(
+                        {
+                            porcentaje_cumplimiento: porcentajeCumplimiento.toFixed(2),
+                            id_nivel_madurez: idNivelMadurez,
+                        },
+                        { transaction }
+                    );
+                } else {
+                    await models.resultado_categoria.create(
+                        {
+                            id_proyecto,
+                            id_checklist: categoria.id,
+                            porcentaje_cumplimiento: porcentajeCumplimiento.toFixed(2),
+                            id_nivel_madurez: idNivelMadurez,
+                        },
+                        { transaction }
+                    );
+                }
     
                 resultados.push({
                     categoria: categoria.titulo,
@@ -154,7 +171,7 @@ class ResultadoCategoriaController {
                 });
             }
     
-            await transaction.commit(); 
+            await transaction.commit();
             res.json({
                 msg: "Cálculo de porcentaje de cumplimiento por categoría realizado y guardado con éxito.",
                 code: 200,
@@ -169,9 +186,8 @@ class ResultadoCategoriaController {
                 error: error.message,
             });
         }
-    }
-    
-    
+    }   
+      
 }
 
 module.exports = ResultadoCategoriaController;
