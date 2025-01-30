@@ -13,7 +13,7 @@ RUN npm install
 # Copiar el resto del código al contenedor
 COPY . .
 
-# Iniciar la aplicación (sin build si es backend)
+# Iniciar la aplicación
 CMD ["npm", "start"]
 
 # Exponer el puerto
