@@ -1,0 +1,57 @@
+name: 04 SAST
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  SAST-CodeQL:
+    name: Build and SAST CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: "javascript"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:javascript"
+
+  sast-eslint:
+    name: SAST ESLint
+    needs: [SAST-CodeQL]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install ESLint
+        run: npm install eslint --save-dev
+
+      - name: Run ESLint
+        run: |
+          npx eslint . --format json -o eslint-results.json || true
+
+      - name: Upload ESLint JSON
+        uses: actions/upload-artifact@v3
+        with:
+          name: eslint-results-json
+          path: eslint-results.json

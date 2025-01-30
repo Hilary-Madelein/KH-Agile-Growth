@@ -1,0 +1,55 @@
+name: Main Observatorio CI Actions
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+  actions: read
+  security-events: write
+  packages: write
+
+jobs:
+  build:
+    name: Build 
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+
+  #Análisis de dependencias
+  sca:
+    needs: build
+    name: SCA
+    uses: ./.github/workflows/sca.yml
+    secrets: inherit
+  
+  #Análisis y Uso de Licencias.
+  license-compliance:
+    needs: build
+    name: License Compliance
+    uses: ./.github/workflows/license-compliance.yml
+    secrets: inherit
+  
+  #Análisis de código Estático
+  sast:
+    needs: build
+    name: SAST
+    uses: ./.github/workflows/sast.yml
+    secrets: inherit
+
+  # Análisis de código Dinámico
+  dast:
+    needs: build
+    name: DAST
+    uses: ./.github/workflows/dast.yml
+    with:
+      image-tag: 'observatorio_backend:latest'
+    secrets: inherit
+
+  

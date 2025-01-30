@@ -1,0 +1,80 @@
+name: 03 SCA
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  security-events: write
+  contents: read
+
+jobs:
+  sca:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-20.04"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    name: SCA Node.js Project
+    steps:
+      # Clonar el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Configurar Node.js 14
+      - name: Set up Node.js 14
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          cache: 'npm'
+
+      # Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+
+      ## --- SONARCLOUD ---
+      # Instalar SonarCloud Scanner
+      - name: Install SonarCloud Scanner
+        run: npm install -g sonarqube-scanner
+
+      # Ejecutar análisis con SonarCloud
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.organization=hilary-madelein \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.coverage.exclusions=**/* \
+            -Dsonar.login=$SONAR_TOKEN
+
+      # Subir artefactos del análisis de SonarCloud
+      - name: Upload SonarCloud Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sonarcloud-report
+          path: .scannerwork
+
+      ## --- SNYK ---
+      # Instalar Snyk CLI
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      # Autenticación Snyk
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      # Ejecutar análisis SCA con Snyk y generar SARIF
+      - name: Run SCA Analysis (Snyk)
+        run: snyk test --sarif > snyk-report.sarif || true
+
+      # Subir resultados de Snyk a GitHub como SARIF
+      - name: Upload Snyk SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-report.sarif
