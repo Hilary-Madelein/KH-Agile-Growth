@@ -209,6 +209,7 @@ router.get('/preguntas/checklist', preguntasController.obtenerChecklist);
 
 /** RESULTADOS DEL CHECKLIST */
 router.post('/resultados/checklist', resultadoChecklistController.guardarResultados);
+router.get('/preguntas-seleccionadas/:external_id', resultadoChecklistController.obtenerPreguntasSeleccionadas);
 
 /** CHECKLIST */
 router.get('/checklist/listar', checklistController.listar);

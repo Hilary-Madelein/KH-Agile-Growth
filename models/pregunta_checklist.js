@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_checklist',
             as: 'checklist'
         });
+
+        pregunta_checklist.hasMany(models.resultado_checklist, {
+            foreignKey: 'id_pregunta_checklist',
+            as: 'resultados'
+        });
     };
 
     pregunta_checklist.initializeDefaults = async function (models) {
