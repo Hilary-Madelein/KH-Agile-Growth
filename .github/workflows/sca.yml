@@ -60,21 +60,3 @@ jobs:
           name: sonarcloud-report
           path: .scannerwork
 
-      ## --- SNYK ---
-      # Instalar Snyk CLI
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-
-      # Autenticación Snyk
-      - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
-      # Ejecutar análisis SCA con Snyk y generar SARIF
-      - name: Run SCA Analysis (Snyk)
-        run: snyk test --sarif > snyk-report.sarif || true
-
-      # Subir resultados de Snyk a GitHub como SARIF
-      - name: Upload Snyk SARIF
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: snyk-report.sarif

@@ -1,4 +1,4 @@
-name: Main Observatorio CI Actions
+name: Main KH-AGILE-GROWTH CI Actions
 
 on:
   push:
