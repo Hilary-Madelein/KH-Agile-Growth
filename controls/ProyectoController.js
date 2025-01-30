@@ -466,6 +466,7 @@ class ProyectoController {
                   "foto",
                   "id",
                   "horasDisponibles",
+                  "external_id",
                 ],
               },
               {
