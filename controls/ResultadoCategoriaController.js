@@ -31,7 +31,7 @@ class ResultadoCategoriaController {
                         attributes: ["titulo", "external_id"],
                     },
                     {
-                        model: models.nivel_madurez, // Usa el alias correcto
+                        model: models.nivel_madurez,
                         as: "nivel_madurez",
                         attributes: ["nombre", "descripcion"],
                     },
@@ -121,7 +121,6 @@ class ResultadoCategoriaController {
     
                 const porcentajeCumplimiento = (respuestasCumplidas / totalPreguntas) * 100;
     
-                // Buscar el nivel de madurez correspondiente al porcentaje
                 const nivelMadurez = await models.nivel_madurez.findOne({
                     where: {
                         rango_minimo: { [Op.lte]: porcentajeCumplimiento },
@@ -138,7 +137,6 @@ class ResultadoCategoriaController {
                     idNivelMadurez = nivelMadurez.id;
                 }
     
-                // Guardar en la tabla resultado_categoria con el id_nivel_madurez
                 await models.resultado_categoria.upsert(
                     {
                         id_proyecto,

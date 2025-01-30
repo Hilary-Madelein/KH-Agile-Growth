@@ -112,7 +112,6 @@ class NivelMadurezGeneralController {
 
       const NG = sumatoriaWi > 0 ? sumatoriaPC_Wi / sumatoriaWi : 0;
 
-      // Buscar el nivel de madurez correspondiente al NG
       const nivelMadurez = await models.nivel_madurez.findOne({
         where: {
           rango_minimo: { [models.Sequelize.Op.lte]: NG },
@@ -121,24 +120,29 @@ class NivelMadurezGeneralController {
         attributes: ["id", "nombre", "descripcion"],
       });
 
+      if (!nivelMadurez) {
+        return res.status(404).json({
+          msg: "No se encontró un nivel de madurez correspondiente",
+          code: 404,
+        });
+      }
+
+      const idNivelMadurez = nivelMadurez.id;
+
       let resultadoNivel = await models.nivel_madurez_general.findOne({
         where: { id_proyecto: id_proyecto },
       });
 
-      const idNivelMadurez = nivelMadurez ? nivelMadurez.id : null;
-
       if (!resultadoNivel) {
-        // Crear el registro si no existe
         resultadoNivel = await models.nivel_madurez_general.create({
           id_proyecto: id_proyecto,
           nivel_general: NG.toFixed(2),
           id_nivel_madurez: idNivelMadurez,
         });
       } else {
-        // Actualizar el registro existente
         await resultadoNivel.update({
           nivel_general: NG.toFixed(2),
-          id_nivel_madurez: idNivelMadurez,
+          id_nivel_madurez: idNivelMadurez, 
         });
       }
 
@@ -147,8 +151,8 @@ class NivelMadurezGeneralController {
         code: 200,
         info: {
           nivel_general: NG.toFixed(2),
-          nivel_madurez: nivelMadurez ? nivelMadurez.nombre : "No determinado",
-          descripcion: nivelMadurez ? nivelMadurez.descripcion : "Sin información",
+          nivel_madurez: nivelMadurez.nombre,
+          descripcion: nivelMadurez.descripcion,
         },
       });
     } catch (error) {
