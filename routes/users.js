@@ -199,6 +199,7 @@ router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obte
 router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyecto);
 router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias', proyectoController.cambiarHorasDiarias);
 router.delete('/proyecto/terminar/:id_proyect/:razonTerminacion',proyectoController.terminarProyecto);
+
 /** ROL_PROYECTO */
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);

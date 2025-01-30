@@ -7,7 +7,6 @@ class ResultadoChecklistController {
 
             console.log('idProyecto:', idProyecto);
 
-            // Buscar el proyecto por external_id
             const proyectoExiste = await proyecto.findOne({
                 where: { external_id: idProyecto }
             });
@@ -23,7 +22,6 @@ class ResultadoChecklistController {
             for (const respuesta of respuestas) {
                 const { idPregunta, respuestaSeleccionada } = respuesta;
 
-                // Verificar si la pregunta existe
                 const preguntaExiste = await pregunta_checklist.findByPk(idPregunta);
                 if (!preguntaExiste) {
                     return res.status(404).json({
@@ -32,9 +30,8 @@ class ResultadoChecklistController {
                     });
                 }
 
-                // Crear el resultado del checklist
                 const resultado = await resultado_checklist.create({
-                    id_proyecto: proyectoExiste.id, // Usar el ID del proyecto encontrado
+                    id_proyecto: proyectoExiste.id, 
                     id_pregunta_checklist: idPregunta,
                     respuesta: respuestaSeleccionada
                 });
