@@ -73,6 +73,7 @@ class ResultadoCategoriaController {
         try {
             const { external_id_proyecto } = req.params;
     
+            // Buscar el proyecto por su external_id
             const proyecto = await models.proyecto.findOne({
                 where: { external_id: external_id_proyecto },
             });
@@ -86,6 +87,7 @@ class ResultadoCategoriaController {
     
             const id_proyecto = proyecto.id;
     
+            // Obtener todas las categorías (checklist)
             const categorias = await models.checklist.findAll({
                 attributes: ["id", "titulo", "peso"],
             });
@@ -93,6 +95,7 @@ class ResultadoCategoriaController {
             let resultados = [];
     
             for (const categoria of categorias) {
+                // Obtener las preguntas asociadas a la categoría
                 const preguntas = await models.pregunta_checklist.findAll({
                     where: { id_checklist: categoria.id },
                     attributes: ["id"],
@@ -109,6 +112,7 @@ class ResultadoCategoriaController {
                     continue;
                 }
     
+                // Contar las respuestas cumplidas
                 const respuestasCumplidas = await models.resultado_checklist.count({
                     where: {
                         id_proyecto: id_proyecto,
@@ -119,8 +123,10 @@ class ResultadoCategoriaController {
                     },
                 });
     
+                // Calcular el porcentaje de cumplimiento
                 const porcentajeCumplimiento = (respuestasCumplidas / totalPreguntas) * 100;
     
+                // Determinar el nivel de madurez basado en el porcentaje
                 const nivelMadurez = await models.nivel_madurez.findOne({
                     where: {
                         rango_minimo: { [Op.lte]: porcentajeCumplimiento },
@@ -136,27 +142,24 @@ class ResultadoCategoriaController {
                     nivelMadurezNombre = nivelMadurez.nombre;
                     idNivelMadurez = nivelMadurez.id;
                 }
-
-                const registroExistente = await models.resultado_categoria.findOne({
+    
+                // Actualizar o insertar el registro en resultado_categoria
+                const [resultado, created] = await models.resultado_categoria.findOrCreate({
                     where: {
-                        id_proyecto,
+                        id_proyecto: id_proyecto,
                         id_checklist: categoria.id,
                     },
+                    defaults: {
+                        porcentaje_cumplimiento: porcentajeCumplimiento.toFixed(2),
+                        id_nivel_madurez: idNivelMadurez,
+                    },
+                    transaction,
                 });
     
-                if (registroExistente) {
-                    await registroExistente.update(
+                if (!created) {
+                    // Si ya existe, actualizar los valores
+                    await resultado.update(
                         {
-                            porcentaje_cumplimiento: porcentajeCumplimiento.toFixed(2),
-                            id_nivel_madurez: idNivelMadurez,
-                        },
-                        { transaction }
-                    );
-                } else {
-                    await models.resultado_categoria.create(
-                        {
-                            id_proyecto,
-                            id_checklist: categoria.id,
                             porcentaje_cumplimiento: porcentajeCumplimiento.toFixed(2),
                             id_nivel_madurez: idNivelMadurez,
                         },
@@ -164,6 +167,7 @@ class ResultadoCategoriaController {
                     );
                 }
     
+                // Agregar el resultado al array
                 resultados.push({
                     categoria: categoria.titulo,
                     porcentaje: porcentajeCumplimiento.toFixed(2),
@@ -173,20 +177,22 @@ class ResultadoCategoriaController {
     
             await transaction.commit();
             res.json({
-                msg: "Cálculo de porcentaje de cumplimiento por categoría realizado y guardado con éxito.",
+                msg: "Cálculo de porcentaje de cumplimiento por categoría realizado y actualizado con éxito.",
                 code: 200,
                 info: resultados,
             });
         } catch (error) {
             await transaction.rollback();
-            console.error("Error al calcular y guardar el porcentaje de cumplimiento por categoría", error);
+            console.error("Error al calcular y actualizar el porcentaje de cumplimiento por categoría", error);
             res.status(500).json({
-                msg: "Se produjo un error al calcular o guardar los resultados.",
+                msg: "Se produjo un error al calcular o actualizar los resultados.",
                 code: 500,
                 error: error.message,
             });
         }
-    }   
+    }
+    
+       
       
 }
 
